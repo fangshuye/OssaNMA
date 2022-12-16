@@ -1,0 +1,231 @@
+---
+title: "Introduction to OssaNMA"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to OssaNMA}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The `OssaNMA` package is built to calculate the optimal sample size and allocation for treatment groups when we plan a new trial and analyze it with the existing network meta-analysis (NMA). This vignette shows you:
+
+- How to calculate the optimal sample allocation for treatment groups with a fixed total sample size to maximize the power;
+- How to calculate the minimum required total sample size and optimal allocation to treatment groups when the goal is to achieve a pre-specified power;
+- How to use the `netmeta` package to calculate the standard error of the estimated effect size between two treatments in the existing network, which would be used as the input parameter of the functions in `OssaNMA`.
+
+We will start by loading `OssaNMA`.
+
+```{r setup}
+library(OssaNMA)
+```
+
+## ssnma()
+
+Assuming a new two-arm trial comparing treatment 1 and treatment 2 is to be planned. The two treatments exist in the existing network, which serves as a foundation to analyze the new trial with the existing network using network meta-analysis (NMA). 
+
+Given that the risk of treatment 1 is 0.2, the risk of treatment 2 is 0.3, and the standard error of the estimated effect size between two treatments from the existing NMA is 0.3, `ssnma()` can be applied to solve the minimum required total sample size for the new trial to achieve a power of 0.8 and allocate it to each treatment group under different allocation method (even or uneven) and analysis method (with or without the existing network):
+
+
+```{r}
+# Analyze the new trial with the existing network
+ssnma(p1 = 0.2, p2 = 0.3, enma_sigma = 0.3, power.level = 0.8, 
+        sig.level = 0.05, method = "with", allocation = "uneven")
+```
+
+```{r}
+# Analyze the new trial with the existing network and 
+# keep the sample size of each group to be the same
+ssnma(p1 = 0.2, p2 = 0.3, enma_sigma = 0.3, power.level = 0.8, 
+        sig.level = 0.05, method = "with", allocation = "even")
+```
+
+```{r}
+# Analyze the new trial without the existing network
+ssnma(p1 = 0.2, p2 = 0.3, enma_sigma = 0.3, power.level = 0.8, 
+        sig.level = 0.05, method = "without", allocation = "uneven")
+```
+
+```{r}
+# Analyze the new trial without the existing network and 
+# keep the sample size of each group to be the same
+ssnma(p1 = 0.2, p2 = 0.3, enma_sigma = 0.3, power.level = 0.8, 
+        sig.level = 0.05, method = "without", allocation = "even")
+```
+
+
+## ssanma()
+
+Assume that we have the same new trial planned as the previous section, the goal in this section is to calculate the optimal sample size allocation to each treatment group with a fixed total sample size of 200 to maximize the power, `ssanma()` is used:
+
+```{r}
+# Analyze the new trial with the existing network
+ssanma(p1 = 0.2, p2 = 0.3, enma_sigma = 0.3, N = 200, sig.level = 0.05,
+        method = "with")
+```
+
+As we can see, the optimal way is to allocate 107 subjects to group 1 and 93 subjects to group 2. The corresponding power is 0.679.
+
+We may wonder, if we were to analyze it traditionally without the existing network, what would be the optimal sample allocation and power? By changing the `method` to without, we have:
+
+```{r}
+# Analyze the new trial without the existing network
+ssanma(p1 = 0.2, p2 = 0.3, enma_sigma = 0.3, N = 200, sig.level = 0.05,
+        method = "without")
+```
+
+The optimal sample allocation when we analyze the new trial traditionally is the same to previously. However, the power decreased greatly compared to analyzing it with the existing network. 
+
+We may also wonder, what's the power if we allocate it evenly to each group? The parameter `allocation` can be used:
+
+```{r}
+# Even allocation and analyze the new trial with the existing network
+ssanma(p1 = 0.2, p2 = 0.3, enma_sigma = 0.3, N = 200, 
+        sig.level = 0.05, method = "with", allocation = "even")
+```
+
+```{r}
+# Even allocation and analyze the new trial without the existing network
+ssanma(p1 = 0.2, p2 = 0.3, enma_sigma = 0.3, N = 200, 
+        sig.level = 0.05, method = "without", allocation = "even")
+```
+
+## Application: Designing a new trial based on an existing NMA
+
+In this section, we will show how to use the `netmeta` package to calculate the standard error of the estimated effect size between two treatments in the existing network, which would be used as the input parameter of the functions in `OssaNMA` package and to assist designing a new trial based on an existing NMA. An example dataset is loaded for illustration:
+
+```{r}
+# load the example dataset in package OssaNMA
+data(BRDdat)
+head(BRDdat)
+```
+
+This example dataset represents a previously published network of interventions for the treatment of Bovine Respiratory Disease (BRD) in feedlot cattle (O'Connor, Yuan, Cullen, Coetzee, Da Silva, and Wang, 2016). The dataset is comprised of 98 trials, 13 treatments and 204 arms. Each row represents the summary statistics for a pairwise comparison between two treatment in a trial. See the meaning of each column below:
+
+- studlab: study id 
+- treat1: name of treatment 1 
+- treat2: name of treatment 2 
+- TE: estimated treatment effect size (log odds ratio) between treat1 and treat2 
+- seTE: standard error of TE
+
+Let's conduct a network meta-analysis(NMA) using this dataset:
+
+```{r}
+library(netmeta)
+nma_res <- netmeta(TE,seTE,treat1,treat2,studlab,
+                   data=BRDdat,
+                   sm="OR",comb.fixed = T,comb.random = F)
+```
+
+Assuming a new two-arm trial comparing Ceftiofur pin and Tildipirosin is to be planned. To apply the functions in `OssaNMA` to help to plan the new trial, we need to have the standard error of the estimated effect size between the two treatments, Ceftiofur pin and Tildipirosin, from the existing network. We can get the value by:
+
+```{r}
+enma_sigma <- nma_res$seTE.fixed['Ceftiofur pin','Tildipirosin']
+enma_sigma
+```
+
+Also, we need to know the risk of two treatments in the new trial. Some options are:
+
+- Take 'No active control'(NAC) as a baseline treatment, we can calculate the estimated log odds ratio between NAC and other treatments using NMA. As for the risk of NAC, we can get it pooling the arm-level data from the existing network if any.
+- Use other source of evidence to assign the risk of two treatments.
+
+Take the first option for example:
+
+```{r}
+# The risk of NMA is calculate by pooling the arm-level data from the existing network. 
+# The arm-level data is not provided in the package so the value is given directly here.
+p_nac <- 0.68
+# extract the log odds ratio between NAC and two treatments from nma_res
+lor_nac_enro <- nma_res$TE.fixed['No active control','Ceftiofur pin']
+lor_nac_flor <- nma_res$TE.fixed['No active control','Tildipirosin']
+# calculate risk of Ceftiofur pin, name it as p1
+p1 <- p_nac/(p_nac + exp(lor_nac_enro)*(1-p_nac))
+# calculate risk of Tildipirosin, name it as p2
+p2 <- p_nac/(p_nac + exp(lor_nac_flor)*(1-p_nac))
+```
+
+Take a look at `p1` and `p2`:
+
+```{r}
+p1
+```
+
+```{r}
+p2
+```
+
+With `p1`, `p2`, and `enma_sigma` obtained from the existing NMA, we can solve the minimum required total sample size for the new trial to achieve a pre-specified power using `ssnma()` or calculate the optimal sample size allocation to each treatment group with a fixed total sample size to maximize the power using `ssanma()`, as how we applied the two functions in the first two sections when we have specified values of the input parameters. 
+
+See the application using the `p1`, `p2`, and `enma_sigma` obtained from the existing NMA below: 
+
+### ssnma()
+
+To solve the minimum required total sample size for the new trial to achieve a pre-specified power of 0.8 and allocate it to each treatment group under different allocation method (even or uneven) and analysis method (with or without the existing network), `ssnma()` can be applied.
+
+See the optimal sample size for each treatment group under different allocation method (even and uneven) and analysis method (with or without the existing network) below:
+
+```{r}
+# Analyze the new trial with the existing network
+ssnma(p1 = p1, p2 = p2, enma_sigma = enma_sigma, power.level = 0.8, 
+        sig.level = 0.05, method = "with", allocation = "uneven")
+```
+
+```{r}
+# Analyze the new trial with the existing network and 
+# keep the sample size of each group to be the same
+ssnma(p1 = p1, p2 = p2, enma_sigma = enma_sigma, power.level = 0.8, 
+        sig.level = 0.05, method = "with", allocation = "even")
+```
+
+```{r}
+# Analyze the new trial without the existing network
+ssnma(p1 = p1, p2 = p2, enma_sigma = enma_sigma, power.level = 0.8, 
+        sig.level = 0.05, method = "without", allocation = "uneven")
+```
+
+```{r}
+# Analyze the new trial without the existing network and 
+# keep the sample size of each group to be the same
+ssnma(p1 = p1, p2 = p2, enma_sigma = enma_sigma, power.level = 0.8, 
+        sig.level = 0.05, method = "without", allocation = "even")
+```
+
+
+### ssanma()
+
+To calculate the optimal sample size allocation to each treatment group with a fixed total sample size of 400 to maximize the power, `ssanma()` is used.
+
+See the optimal sample size allocation for each treatment group and the corresponding power under different allocation method (even and uneven) and analysis method (with or without the existing network) below:
+
+```{r}
+# Analyze the new trial with the existing network
+ssanma(p1 = p1, p2 = p2, enma_sigma = enma_sigma, N = 400, sig.level = 0.05,
+        method = "with")
+```
+
+
+```{r}
+# Analyze the new trial without the existing network
+ssanma(p1 = p1, p2 = p2, enma_sigma = enma_sigma, N = 400, sig.level = 0.05,
+        method = "without")
+```
+
+
+```{r}
+# Even allocation and analyze the new trial with the existing network
+ssanma(p1 = p1, p2 = p2, enma_sigma = enma_sigma, N = 400, 
+        sig.level = 0.05, method = "with", allocation = "even")
+```
+
+```{r}
+# Even allocation and analyze the new trial without the existing network
+ssanma(p1 = p1, p2 = p2, enma_sigma = enma_sigma, N = 400, 
+        sig.level = 0.05, method = "without", allocation = "even")
+```
+

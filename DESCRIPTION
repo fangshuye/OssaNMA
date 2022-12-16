@@ -1,0 +1,21 @@
+Package: OssaNMA
+Type: Package
+Title: Calculate the Optimal Sample Size Allocation of a New Two-Arm Trial when Analyzing with a Existing Network Meta-analysis
+Version: 0.1.0
+Authors@R: 
+    person("Fangshu", "Ye", , "fye@iastate.edu", role = c("aut", "cre"))
+Description: A set of functions calculating the minimum total sample size needed to achieve a pre-specified power or the optimal allocation for each treatment group with a fixed total sample size to maximize the power.
+License: GPL-3
+Imports: NlcOptim (>= 0.6), DEoptimR (>= 1.0.11)
+Depends: R(>= 3.5.0)
+URL: https://github.com/fangshuye/OssaNMA
+BugReports: https://github.com/fangshuye/OssaNMA/issues
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.2
+Suggests: 
+    knitr,
+    rmarkdown,
+    netmeta
+VignetteBuilder: knitr
