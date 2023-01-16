@@ -1,10 +1,10 @@
 Package: OssaNMA
 Type: Package
-Title: Calculate the Optimal Sample Size Allocation of a New Two-Arm Trial when Analyzing with a Existing Network Meta-analysis
+Title: Optimal Sample Size and Allocation with a Network Meta-Analysis
 Version: 0.1.0
 Authors@R: 
     person("Fangshu", "Ye", , "fye@iastate.edu", role = c("aut", "cre"))
-Description: A set of functions calculating the minimum total sample size needed to achieve a pre-specified power or the optimal allocation for each treatment group with a fixed total sample size to maximize the power.
+Description: A system for calculating the minimum total sample size needed to achieve a prespecified power or the optimal allocation for each treatment group with a fixed total sample size to maximize the power.
 License: GPL-3
 Imports: NlcOptim (>= 0.6), DEoptimR (>= 1.0.11)
 Depends: R(>= 3.5.0)
