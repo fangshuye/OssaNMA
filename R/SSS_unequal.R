@@ -34,18 +34,6 @@ SSS_uneven <- function(p1,p2,enma_sigma,power.level,sig.level = 0.05, method = "
   }
 
   solution_temp <- NlcOptim::solnl(n0,objfun=objfun,confun=confun)$par
-  solution_temp_int <- round(solution_temp,0)
-  # get the integer solution around this
-  dat_para <- expand.grid(n1=c(max(solution_temp_int[1]-2,1):(solution_temp_int[1]+2)),n2=c(max(solution_temp_int[2]-2,1):(solution_temp_int[2]+2)))
-
-  for(c in 1:nrow(dat_para)){
-    dat_para[c,3] <- power_cal(c(dat_para$n1[c],dat_para$n2[c]))
-  }
-
-  dat_para <- dat_para[dat_para$V3>=power.level,]
-  dat_para$n <- dat_para$n1+dat_para$n2
-  nmin <- min(dat_para$n)
-  dat_para <- dat_para[dat_para$n==nmin,]
-  dat_para <- dat_para[order(dat_para$V3,decreasing = TRUE),]
-  return(as.numeric(dat_para[1,1:2]))
+  solution_integer <- ceiling(solution_temp)
+  return(solution_integer[,1])
 }

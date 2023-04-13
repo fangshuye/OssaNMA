@@ -33,18 +33,12 @@ SSS_even <- function(p1,p2,enma_sigma,power.level,sig.level = 0.05, method = "wi
   }
 
   solution_temp <- NlcOptim::solnl(n0,objfun=objfun,confun=confun)$par
-  solution_temp_int <- round(solution_temp[2],0)
+  solution_temp_int <- ceiling(solution_temp[2])
   # get the even integer solution around this
   if(solution_temp_int %% 2 ==0){
     res <- solution_temp_int
   }else{
-    n <- c(solution_temp_int+1,solution_temp_int-1)
-    n <- n[n>0]
-    power <- power_cal(n)
-    dat_para <- data.frame(n,power)
-    dat_para <- dat_para[dat_para$power>=power.level,]
-    res <- min(dat_para$n)
-    #res <- solution_temp_int+1
+    res <- solution_temp_int+1
   }
   return(c(res/2,res/2))
 }
