@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Introduction to OssaNMA</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Introduction to OssaNMA</h1>
+
+
+
+<p>The <code>OssaNMA</code> package is built to calculate the optimal
+sample size and allocation for treatment groups when we plan a new trial
+and analyze it with the existing network meta-analysis (NMA). This
+vignette shows you:</p>
+<ul>
+<li>How to calculate the optimal sample allocation for treatment groups
+with a fixed total sample size to maximize the power;</li>
+<li>How to calculate the minimum required total sample size and optimal
+allocation to treatment groups when the goal is to achieve a
+pre-specified power;</li>
+<li>How to use the <code>netmeta</code> package to calculate the
+standard error of the estimated effect size between two treatments in
+the existing network, which would be used as the input parameter of the
+functions in <code>OssaNMA</code>.</li>
+</ul>
+<p>We will start by loading <code>OssaNMA</code>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(OssaNMA)</span></code></pre></div>
+<div id="ssnma" class="section level2">
+<h2>ssnma()</h2>
+<p>Assuming a new two-arm trial comparing treatment 1 and treatment 2 is
+to be planned. The two treatments exist in the existing network, which
+serves as a foundation to analyze the new trial with the existing
+network using network meta-analysis (NMA).</p>
+<p>Given that the risk of treatment 1 is 0.2, the risk of treatment 2 is
+0.3, and the standard error of the estimated effect size between two
+treatments from the existing NMA is 0.3, <code>ssnma()</code> can be
+applied to solve the minimum required total sample size for the new
+trial to achieve a power of 0.8 and allocate it to each treatment group
+under different allocation method (even or uneven) and analysis method
+(with or without the existing network):</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Analyze the new trial with the existing network</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssnma</span>(<span class="at">p1 =</span> <span class="fl">0.2</span>, <span class="at">p2 =</span> <span class="fl">0.3</span>, <span class="at">enma_sigma =</span> <span class="fl">0.3</span>, <span class="at">power.level =</span> <span class="fl">0.8</span>, </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">method =</span> <span class="st">&quot;with&quot;</span>, <span class="at">allocation =</span> <span class="st">&quot;uneven&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 187 163</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Analyze the new trial with the existing network and </span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># keep the sample size of each group to be the same</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ssnma</span>(<span class="at">p1 =</span> <span class="fl">0.2</span>, <span class="at">p2 =</span> <span class="fl">0.3</span>, <span class="at">enma_sigma =</span> <span class="fl">0.3</span>, <span class="at">power.level =</span> <span class="fl">0.8</span>, </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">method =</span> <span class="st">&quot;with&quot;</span>, <span class="at">allocation =</span> <span class="st">&quot;even&quot;</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 176 176</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Analyze the new trial without the existing network</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssnma</span>(<span class="at">p1 =</span> <span class="fl">0.2</span>, <span class="at">p2 =</span> <span class="fl">0.3</span>, <span class="at">enma_sigma =</span> <span class="fl">0.3</span>, <span class="at">power.level =</span> <span class="fl">0.8</span>, </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">method =</span> <span class="st">&quot;without&quot;</span>, <span class="at">allocation =</span> <span class="st">&quot;uneven&quot;</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 317 277</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Analyze the new trial without the existing network and </span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># keep the sample size of each group to be the same</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ssnma</span>(<span class="at">p1 =</span> <span class="fl">0.2</span>, <span class="at">p2 =</span> <span class="fl">0.3</span>, <span class="at">enma_sigma =</span> <span class="fl">0.3</span>, <span class="at">power.level =</span> <span class="fl">0.8</span>, </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">method =</span> <span class="st">&quot;without&quot;</span>, <span class="at">allocation =</span> <span class="st">&quot;even&quot;</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 298 298</span></span></code></pre></div>
+</div>
+<div id="ssanma" class="section level2">
+<h2>ssanma()</h2>
+<p>Assume that we have the same new trial planned as the previous
+section, the goal in this section is to calculate the optimal sample
+size allocation to each treatment group with a fixed total sample size
+of 200 to maximize the power, <code>ssanma()</code> is used:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Analyze the new trial with the existing network</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssanma</span>(<span class="at">p1 =</span> <span class="fl">0.2</span>, <span class="at">p2 =</span> <span class="fl">0.3</span>, <span class="at">enma_sigma =</span> <span class="fl">0.3</span>, <span class="at">N =</span> <span class="dv">200</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">method =</span> <span class="st">&quot;with&quot;</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $sample_alloc</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 107  93</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $power</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.679</span></span></code></pre></div>
+<p>As we can see, the optimal way is to allocate 107 subjects to group 1
+and 93 subjects to group 2. The corresponding power is 0.679.</p>
+<p>We may wonder, if we were to analyze it traditionally without the
+existing network, what would be the optimal sample allocation and power?
+By changing the <code>method</code> to without, we have:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Analyze the new trial without the existing network</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssanma</span>(<span class="at">p1 =</span> <span class="fl">0.2</span>, <span class="at">p2 =</span> <span class="fl">0.3</span>, <span class="at">enma_sigma =</span> <span class="fl">0.3</span>, <span class="at">N =</span> <span class="dv">200</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">method =</span> <span class="st">&quot;without&quot;</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $sample_alloc</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 107  93</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $power</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.37</span></span></code></pre></div>
+<p>The optimal sample allocation when we analyze the new trial
+traditionally is the same to previously. However, the power decreased
+greatly compared to analyzing it with the existing network.</p>
+<p>We may also wonder, what’s the power if we allocate it evenly to each
+group? The parameter <code>allocation</code> can be used:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Even allocation and analyze the new trial with the existing network</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssanma</span>(<span class="at">p1 =</span> <span class="fl">0.2</span>, <span class="at">p2 =</span> <span class="fl">0.3</span>, <span class="at">enma_sigma =</span> <span class="fl">0.3</span>, <span class="at">N =</span> <span class="dv">200</span>, </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">method =</span> <span class="st">&quot;with&quot;</span>, <span class="at">allocation =</span> <span class="st">&quot;even&quot;</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $sample_alloc</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 100 100</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $power</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.678</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Even allocation and analyze the new trial without the existing network</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssanma</span>(<span class="at">p1 =</span> <span class="fl">0.2</span>, <span class="at">p2 =</span> <span class="fl">0.3</span>, <span class="at">enma_sigma =</span> <span class="fl">0.3</span>, <span class="at">N =</span> <span class="dv">200</span>, </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">method =</span> <span class="st">&quot;without&quot;</span>, <span class="at">allocation =</span> <span class="st">&quot;even&quot;</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $sample_alloc</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 100 100</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $power</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.369</span></span></code></pre></div>
+</div>
+<div id="application-designing-a-new-trial-based-on-an-existing-nma" class="section level2">
+<h2>Application: Designing a new trial based on an existing NMA</h2>
+<p>In this section, we will show how to use the <code>netmeta</code>
+package to calculate the standard error of the estimated effect size
+between two treatments in the existing network, which would be used as
+the input parameter of the functions in <code>OssaNMA</code> package and
+to assist designing a new trial based on an existing NMA. An example
+dataset is loaded for illustration:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load the example dataset in package OssaNMA</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(BRDdat)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(BRDdat)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   studlab            treat1       treat2       TE      seTE</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1       1 No active control  Florfenicol 1.817766 0.4198201</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2       2 No active control Enrofloxacin 3.471966 1.5027924</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3       3 No active control Enrofloxacin 3.201584 0.4781349</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4       4 No active control Enrofloxacin 1.434531 0.3878773</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5       5 No active control Enrofloxacin 3.197472 0.4938823</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6       6 No active control Enrofloxacin 1.945910 0.3854496</span></span></code></pre></div>
+<p>This example dataset represents a previously published network of
+interventions for the treatment of Bovine Respiratory Disease (BRD) in
+feedlot cattle (O’Connor, Yuan, Cullen, Coetzee, Da Silva, and Wang,
+2016). The dataset is comprised of 98 trials, 13 treatments and 204
+arms. Each row represents the summary statistics for a pairwise
+comparison between two treatment in a trial. See the meaning of each
+column below:</p>
+<ul>
+<li>studlab: study id</li>
+<li>treat1: name of treatment 1</li>
+<li>treat2: name of treatment 2</li>
+<li>TE: estimated treatment effect size (log odds ratio) between treat1
+and treat2</li>
+<li>seTE: standard error of TE</li>
+</ul>
+<p>Let’s conduct a network meta-analysis(NMA) using this dataset:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(netmeta)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Loading required package: meta</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Loading &#39;meta&#39; package (version 6.0-0).</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Type &#39;help(meta)&#39; for a brief overview.</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Readers of &#39;Meta-Analysis with R (Use R!)&#39; should install</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; older version of &#39;meta&#39; package: https://tinyurl.com/dt4y5drs</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Loading &#39;netmeta&#39; package (version 2.5-0).</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Type &#39;help(&quot;netmeta-package&quot;)&#39; for a brief overview.</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Readers of &#39;Meta-Analysis with R (Use R!)&#39; should install</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; older version of &#39;netmeta&#39; package: https://tinyurl.com/kyz6wjbb</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>nma_res <span class="ot">&lt;-</span> <span class="fu">netmeta</span>(TE,seTE,treat1,treat2,studlab,</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data=</span>BRDdat,</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>                   <span class="at">sm=</span><span class="st">&quot;OR&quot;</span>,<span class="at">comb.fixed =</span> T,<span class="at">comb.random =</span> F)</span></code></pre></div>
+<p>Assuming a new two-arm trial comparing Ceftiofur pin and Tildipirosin
+is to be planned. To apply the functions in <code>OssaNMA</code> to help
+to plan the new trial, we need to have the standard error of the
+estimated effect size between the two treatments, Ceftiofur pin and
+Tildipirosin, from the existing network. We can get the value by:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>enma_sigma <span class="ot">&lt;-</span> nma_res<span class="sc">$</span>seTE.fixed[<span class="st">&#39;Ceftiofur pin&#39;</span>,<span class="st">&#39;Tildipirosin&#39;</span>]</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>enma_sigma</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.2231349</span></span></code></pre></div>
+<p>Also, we need to know the risk of two treatments in the new trial.
+Some options are:</p>
+<ul>
+<li>Take ‘No active control’(NAC) as a baseline treatment, we can
+calculate the estimated log odds ratio between NAC and other treatments
+using NMA. As for the risk of NAC, we can get it pooling the arm-level
+data from the existing network if any.</li>
+<li>Use other source of evidence to assign the risk of two
+treatments.</li>
+</ul>
+<p>Take the first option for example:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The risk of NMA is calculate by pooling the arm-level data from the existing network. </span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># The arm-level data is not provided in the package so the value is given directly here.</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>p_nac <span class="ot">&lt;-</span> <span class="fl">0.68</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># extract the log odds ratio between NAC and two treatments from nma_res</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>lor_nac_enro <span class="ot">&lt;-</span> nma_res<span class="sc">$</span>TE.fixed[<span class="st">&#39;No active control&#39;</span>,<span class="st">&#39;Ceftiofur pin&#39;</span>]</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>lor_nac_flor <span class="ot">&lt;-</span> nma_res<span class="sc">$</span>TE.fixed[<span class="st">&#39;No active control&#39;</span>,<span class="st">&#39;Tildipirosin&#39;</span>]</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate risk of Ceftiofur pin, name it as p1</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> p_nac<span class="sc">/</span>(p_nac <span class="sc">+</span> <span class="fu">exp</span>(lor_nac_enro)<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>p_nac))</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate risk of Tildipirosin, name it as p2</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> p_nac<span class="sc">/</span>(p_nac <span class="sc">+</span> <span class="fu">exp</span>(lor_nac_flor)<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>p_nac))</span></code></pre></div>
+<p>Take a look at <code>p1</code> and <code>p2</code>:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>p1</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.1868955</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>p2</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.2366667</span></span></code></pre></div>
+<p>With <code>p1</code>, <code>p2</code>, and <code>enma_sigma</code>
+obtained from the existing NMA, we can solve the minimum required total
+sample size for the new trial to achieve a pre-specified power using
+<code>ssnma()</code> or calculate the optimal sample size allocation to
+each treatment group with a fixed total sample size to maximize the
+power using <code>ssanma()</code>, as how we applied the two functions
+in the first two sections when we have specified values of the input
+parameters.</p>
+<p>See the application using the <code>p1</code>, <code>p2</code>, and
+<code>enma_sigma</code> obtained from the existing NMA below:</p>
+<div id="ssnma-1" class="section level3">
+<h3>ssnma()</h3>
+<p>To solve the minimum required total sample size for the new trial to
+achieve a pre-specified power of 0.8 and allocate it to each treatment
+group under different allocation method (even or uneven) and analysis
+method (with or without the existing network), <code>ssnma()</code> can
+be applied.</p>
+<p>See the optimal sample size for each treatment group under different
+allocation method (even and uneven) and analysis method (with or without
+the existing network) below:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Analyze the new trial with the existing network</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssnma</span>(<span class="at">p1 =</span> p1, <span class="at">p2 =</span> p2, <span class="at">enma_sigma =</span> enma_sigma, <span class="at">power.level =</span> <span class="fl">0.8</span>, </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">method =</span> <span class="st">&quot;with&quot;</span>, <span class="at">allocation =</span> <span class="st">&quot;uneven&quot;</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 853 782</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Analyze the new trial with the existing network and </span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># keep the sample size of each group to be the same</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ssnma</span>(<span class="at">p1 =</span> p1, <span class="at">p2 =</span> p2, <span class="at">enma_sigma =</span> enma_sigma, <span class="at">power.level =</span> <span class="fl">0.8</span>, </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">method =</span> <span class="st">&quot;with&quot;</span>, <span class="at">allocation =</span> <span class="st">&quot;even&quot;</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 819 819</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Analyze the new trial without the existing network</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssnma</span>(<span class="at">p1 =</span> p1, <span class="at">p2 =</span> p2, <span class="at">enma_sigma =</span> enma_sigma, <span class="at">power.level =</span> <span class="fl">0.8</span>, </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">method =</span> <span class="st">&quot;without&quot;</span>, <span class="at">allocation =</span> <span class="st">&quot;uneven&quot;</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1106 1015</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Analyze the new trial without the existing network and </span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># keep the sample size of each group to be the same</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ssnma</span>(<span class="at">p1 =</span> p1, <span class="at">p2 =</span> p2, <span class="at">enma_sigma =</span> enma_sigma, <span class="at">power.level =</span> <span class="fl">0.8</span>, </span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">method =</span> <span class="st">&quot;without&quot;</span>, <span class="at">allocation =</span> <span class="st">&quot;even&quot;</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1062 1062</span></span></code></pre></div>
+</div>
+<div id="ssanma-1" class="section level3">
+<h3>ssanma()</h3>
+<p>To calculate the optimal sample size allocation to each treatment
+group with a fixed total sample size of 400 to maximize the power,
+<code>ssanma()</code> is used.</p>
+<p>See the optimal sample size allocation for each treatment group and
+the corresponding power under different allocation method (even and
+uneven) and analysis method (with or without the existing network)
+below:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Analyze the new trial with the existing network</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssanma</span>(<span class="at">p1 =</span> p1, <span class="at">p2 =</span> p2, <span class="at">enma_sigma =</span> enma_sigma, <span class="at">N =</span> <span class="dv">400</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">method =</span> <span class="st">&quot;with&quot;</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $sample_alloc</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 209 191</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $power</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.441</span></span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Analyze the new trial without the existing network</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssanma</span>(<span class="at">p1 =</span> p1, <span class="at">p2 =</span> p2, <span class="at">enma_sigma =</span> enma_sigma, <span class="at">N =</span> <span class="dv">400</span>, <span class="at">sig.level =</span> <span class="fl">0.05</span>,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">method =</span> <span class="st">&quot;without&quot;</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $sample_alloc</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 209 191</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $power</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.23</span></span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Even allocation and analyze the new trial with the existing network</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssanma</span>(<span class="at">p1 =</span> p1, <span class="at">p2 =</span> p2, <span class="at">enma_sigma =</span> enma_sigma, <span class="at">N =</span> <span class="dv">400</span>, </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">method =</span> <span class="st">&quot;with&quot;</span>, <span class="at">allocation =</span> <span class="st">&quot;even&quot;</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $sample_alloc</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 200 200</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $power</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.441</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Even allocation and analyze the new trial without the existing network</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ssanma</span>(<span class="at">p1 =</span> p1, <span class="at">p2 =</span> p2, <span class="at">enma_sigma =</span> enma_sigma, <span class="at">N =</span> <span class="dv">400</span>, </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">sig.level =</span> <span class="fl">0.05</span>, <span class="at">method =</span> <span class="st">&quot;without&quot;</span>, <span class="at">allocation =</span> <span class="st">&quot;even&quot;</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $sample_alloc</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 200 200</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $power</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.229</span></span></code></pre></div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
