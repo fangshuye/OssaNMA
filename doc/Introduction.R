@@ -106,21 +106,21 @@ ssnma(p1 = p1, p2 = p2, enma_sigma = enma_sigma, power.level = 0.8,
 
 ## -----------------------------------------------------------------------------
 # Analyze the new trial with the existing network
-ssanma(p1 = p1, p2 = p2, enma_sigma = enma_sigma, N = 400, sig.level = 0.05,
+ssanma(p1 = p1, p2 = p2, enma_sigma = enma_sigma, N = 800, sig.level = 0.05,
         method = "with")
 
 ## -----------------------------------------------------------------------------
 # Analyze the new trial without the existing network
-ssanma(p1 = p1, p2 = p2, enma_sigma = enma_sigma, N = 400, sig.level = 0.05,
+ssanma(p1 = p1, p2 = p2, enma_sigma = enma_sigma, N = 800, sig.level = 0.05,
         method = "without")
 
 ## -----------------------------------------------------------------------------
 # Even allocation and analyze the new trial with the existing network
-ssanma(p1 = p1, p2 = p2, enma_sigma = enma_sigma, N = 400, 
+ssanma(p1 = p1, p2 = p2, enma_sigma = enma_sigma, N = 800, 
         sig.level = 0.05, method = "with", allocation = "even")
 
 ## -----------------------------------------------------------------------------
 # Even allocation and analyze the new trial without the existing network
-ssanma(p1 = p1, p2 = p2, enma_sigma = enma_sigma, N = 400, 
+ssanma(p1 = p1, p2 = p2, enma_sigma = enma_sigma, N = 800, 
         sig.level = 0.05, method = "without", allocation = "even")
 

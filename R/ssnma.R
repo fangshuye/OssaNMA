@@ -14,7 +14,9 @@ NULL
 #' @param sig.level Significance level, the default value is 0.05
 #' @param method a character string specifying the method of analyzing the new trial, must be one of 'with' (default) or 'without'
 #' @param allocation a character string specifying the type of sample size allocation between two groups, must be one of 'uneven' (default) or 'even'.
-#' @return the sample size for each treatment group
+#' @return A list with the following components:
+#'  \item{sample_size}{Sample size for each treatment group.}
+#'  \item{power}{Power of the test.}
 #' @export
 #' @examples
 #' ssnma(p1 = 0.2, p2 = 0.3, enma_sigma = 0.4, power = 0.8)
@@ -24,11 +26,6 @@ ssnma <- function(p1,p2,enma_sigma = NULL,power.level,sig.level = 0.05, method =
   if( any(p2 < 0 | p2 > 1) ) stop('p2 not between 0 and 1')
   if( any(power.level < 0 | power.level > 1) ) stop('power.level not between 0 and 1')
   if( any(sig.level < 0 | sig.level > 1) ) stop('sig.level not between 0 and 1')
-  beta1 = log(p1/(1-p1))
-  beta2 = log(p2/(1-p2)) - log(p1/(1-p1))
-  mu_1 <- exp(beta1)/(1+exp(beta1))^2
-  mu_2 <- exp(beta1 + beta2)/(1+exp(beta1 + beta2))^2
-  n0=c(1,1)
 
   if(allocation == "uneven"){
     SSS_uneven(p1,p2,enma_sigma,power.level,sig.level, method)

@@ -35,5 +35,10 @@ SSS_uneven <- function(p1,p2,enma_sigma,power.level,sig.level = 0.05, method = "
 
   solution_temp <- NlcOptim::solnl(n0,objfun=objfun,confun=confun)$par
   solution_integer <- ceiling(solution_temp)
-  return(solution_integer[,1])
+
+  n_each_group <- solution_integer[,1]
+  power_value <- round(power_cal(n_each_group),3)
+  return(list(sample_size = n_each_group,
+              power = power_value))
+
 }

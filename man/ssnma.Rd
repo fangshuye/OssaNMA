@@ -30,7 +30,9 @@ ssnma(
 \item{allocation}{a character string specifying the type of sample size allocation between two groups, must be one of 'uneven' (default) or 'even'.}
 }
 \value{
-the sample size for each treatment group
+A list with the following components:
+\item{sample_size}{Sample size for each treatment group.}
+\item{power}{Power of the test.}
 }
 \description{
 This function calculates the optimal sample size for each treatment group to

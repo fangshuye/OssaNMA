@@ -1,7 +1,7 @@
 Package: OssaNMA
 Type: Package
 Title: Optimal Sample Size and Allocation with a Network Meta-Analysis
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: 
     person("Fangshu", "Ye", , "fye@iastate.edu", role = c("aut", "cre"))
 Description: A system for calculating the minimum total sample size needed to achieve a prespecified power or the optimal allocation for each treatment group with a fixed total sample size to maximize the power.

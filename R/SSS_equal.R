@@ -40,6 +40,10 @@ SSS_even <- function(p1,p2,enma_sigma,power.level,sig.level = 0.05, method = "wi
   }else{
     res <- solution_temp_int+1
   }
-  return(c(res/2,res/2))
+
+  power_value <- round(power_cal(res),3)
+  return(list(sample_size = c(res/2,res/2),
+              power = power_value))
+
 }
 
