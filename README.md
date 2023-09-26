@@ -12,5 +12,6 @@ You can install this through use devtools
 
 ## Example Code
 `# Analyze the new trial with the existing network
-ssnma(p1 = 0.2, p2 = 0.3, enma_sigma = 0.3, power.level = 0.8, 
-        sig.level = 0.05, method = "with", allocation = "uneven")`
+
+ssnma(p1 = 0.2, p2 = 0.3, enma_sigma = 0.3, power.level = 0.8, sig.level = 0.05, method = "with", allocation = "uneven")
+`
