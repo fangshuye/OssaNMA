@@ -59,6 +59,7 @@ We may wonder, if we were to analyze it traditionally without the existing netwo
 
 `ssanma(p1 = 0.2, p2 = 0.3, enma_sigma = 0.3, N = 200, sig.level = 0.05,
         method = "without")`
+        
 The output is<br>
 `#> $sample_alloc`<br>
 `#> [1] 107  93`<br>
@@ -72,6 +73,7 @@ We may also wonder, what’s the power if we allocate it evenly to each group? T
 
 `ssanma(p1 = 0.2, p2 = 0.3, enma_sigma = 0.3, N = 200, 
         sig.level = 0.05, method = "with", allocation = "even")`
+        
 The output is<br> 
 `#> $sample_alloc`<br>
 `#> [1] 100 100`<br>
